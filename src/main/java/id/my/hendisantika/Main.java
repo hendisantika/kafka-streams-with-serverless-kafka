@@ -1,7 +1,14 @@
 package id.my.hendisantika;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.kstream.Branched;
+import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,5 +51,56 @@ public class Main {
             cfg.load(inputStream);
         }
         return cfg;
+    }
+
+    public static void startKafkaStreams(Properties propertiesFromFile) {
+        try {
+            Properties kafkaStreamsProperties = getKafkaStreamsProperties(propertiesFromFile);
+
+            String notificationTopicName = propertiesFromFile.get("kafka.notification.topic").toString();
+            String pushNotificationTopicName = propertiesFromFile.get("kafka.pushnotification.topic").toString();
+            String smsTopicName = propertiesFromFile.get("kafka.sms.topic").toString();
+            String emailTopicName = propertiesFromFile.get("kafka.email.topic").toString();
+
+
+            final StreamsBuilder builder = new StreamsBuilder();
+            final KStream<String, String> notificationRecord = builder.stream(notificationTopicName, Consumed.with(Serdes.String(), Serdes.String()));
+
+            notificationRecord.split().branch(
+                            (id, notification) -> {
+                                try {
+                                    NotificationDTO notificationDTO = objectMapper.readValue(notification, NotificationDTO.class);
+                                    return PUSH_NOTIFICATION.equals(notificationDTO.getNotificationType());
+
+                                } catch (JsonProcessingException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }, Branched.withConsumer(ks -> ks.to(pushNotificationTopicName)))
+                    .branch((id, notification) -> {
+                        try {
+                            NotificationDTO notificationDTO = objectMapper.readValue(notification, NotificationDTO.class);
+                            return NotificationType.SMS.equals(notificationDTO.getNotificationType());
+
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, Branched.withConsumer(ks -> ks.to(smsTopicName)))
+                    .branch((id, notification) -> {
+                        try {
+                            NotificationDTO notificationDTO = objectMapper.readValue(notification, NotificationDTO.class);
+                            return NotificationType.EMAIL.equals(notificationDTO.getNotificationType());
+
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, Branched.withConsumer(ks -> ks.to(emailTopicName)));
+
+            KafkaStreams streams = new KafkaStreams(builder.build(), kafkaStreamsProperties);
+            streams.start();
+            Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
