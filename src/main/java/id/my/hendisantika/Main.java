@@ -15,6 +15,11 @@ import org.apache.kafka.streams.kstream.KStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.UUID;
+
+import static id.my.hendisantika.NotificationType.EMAIL;
+import static id.my.hendisantika.NotificationType.PUSH_NOTIFICATION;
+import static id.my.hendisantika.NotificationType.SMS;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,17 +37,24 @@ import java.util.Properties;
 public class Main {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        log.info("Starting main by sending notifications");
+        NotificationProducer notificationProducer = new NotificationProducer();
 
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.print("Hello and welcome!");
+        NotificationDTO pushNotificationDTO = new NotificationDTO(UUID.randomUUID(), PUSH_NOTIFICATION, "This is a push notification", "device_id");
+        notificationProducer.sendNotification(pushNotificationDTO, loadConfigFromFiles());
+        log.info("Push Notification sent: {}", pushNotificationDTO);
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        NotificationDTO smsNotificationDTO = new NotificationDTO(UUID.randomUUID(), SMS, "This is a sms notification", "phone_number");
+        notificationProducer.sendNotification(smsNotificationDTO, loadConfigFromFiles());
+        log.info("SMS Notification sent: {}", smsNotificationDTO);
+
+        NotificationDTO emailNotificationDTO = new NotificationDTO(UUID.randomUUID(), EMAIL, "This is a email notification", "email_address");
+        notificationProducer.sendNotification(emailNotificationDTO, loadConfigFromFiles());
+        log.info("Email Notification sent: {}", smsNotificationDTO);
+
+        log.info("Starting Kafka Streams for consuming notification topic");
+        startKafkaStreams(loadConfigFromFiles());
     }
 
     private static Properties loadConfigFromFiles() throws IOException {
@@ -81,7 +93,7 @@ public class Main {
                     .branch((id, notification) -> {
                         try {
                             NotificationDTO notificationDTO = objectMapper.readValue(notification, NotificationDTO.class);
-                            return NotificationType.SMS.equals(notificationDTO.getNotificationType());
+                            return SMS.equals(notificationDTO.getNotificationType());
 
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
@@ -90,7 +102,7 @@ public class Main {
                     .branch((id, notification) -> {
                         try {
                             NotificationDTO notificationDTO = objectMapper.readValue(notification, NotificationDTO.class);
-                            return NotificationType.EMAIL.equals(notificationDTO.getNotificationType());
+                            return EMAIL.equals(notificationDTO.getNotificationType());
 
                         } catch (JsonProcessingException e) {
                             throw new RuntimeException(e);
