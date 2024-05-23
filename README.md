@@ -24,4 +24,6 @@ The definition of the repository is here.
 
 ## Running the application
 
-```./gradlew clean run```
+```shell
+./gradlew clean run
+```
