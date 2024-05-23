@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
     implementation group: 'org.apache.kafka', name: 'kafka-streams', version: '3.7.0'
     implementation group: 'org.apache.kafka', name: 'kafka-streams', version: '3.7.0'
     implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '3.7.0'
