@@ -3,9 +3,11 @@ package id.my.hendisantika;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Branched;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
@@ -103,4 +105,19 @@ public class Main {
         }
 
     }
+
+    private static Properties getKafkaStreamsProperties(Properties propertiesFromFile) {
+        var kafkaStreamsProperties = new Properties();
+
+        kafkaStreamsProperties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, propertiesFromFile.get("kafka.bootstrap.servers"));
+        kafkaStreamsProperties.put("sasl.mechanism", propertiesFromFile.get("kafka.sasl.mechanism"));
+        kafkaStreamsProperties.put("security.protocol", propertiesFromFile.get("kafka.security.protocol"));
+        kafkaStreamsProperties.put("sasl.jaas.config", propertiesFromFile.get("kafka.sasl.jaas.config"));
+
+        kafkaStreamsProperties.put(StreamsConfig.APPLICATION_ID_CONFIG, "notification-streams");
+        kafkaStreamsProperties.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+        kafkaStreamsProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return kafkaStreamsProperties;
+    }
+
 }

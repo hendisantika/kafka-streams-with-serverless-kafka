@@ -1,0 +1,13 @@
+
+	java:S112N"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8˜õ¹–ú1J$641937bc-d855-4756-80d2-a7e030e0e52b
+	java:S112W"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8˜õ¹–ú1J$b75b7b90-f83a-4616-a968-b66ab097b8dc
+	java:S112`"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8˜õ¹–ú1J$5dc9234d-cc6b-4771-815e-476f3ce2a261
+	java:S112h"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8˜õ¹–ú1J$452fb6aa-6d6a-400d-a425-d8ab03b8d69f
+l
+java:S2095d"JUse try-with-resources or close this "KafkaStreams" in a "finally" clause.(ö¯‘ÿÿÿÿÿ8£¥»–ú1
+k	java:S106'"+Replace this use of System.out by a logger.(›Ê­üÿÿÿÿJ$08ada374-b277-445f-8530-e83f4600c0c7
+k	java:S106,"+Replace this use of System.out by a logger.(Ğö¶üÿÿÿÿJ$309e5878-e878-48a6-b51d-700feaab8593
+j
+java:S1874v"HRemove this use of "CACHE_MAX_BYTES_BUFFERING_CONFIG"; it is deprecated.(¡èƒèùÿÿÿÿ8À¥»–ú1
+€
+java:S11440"8Remove this unused private "loadConfigFromFiles" method.(È‚”şùÿÿÿÿ8õ¯¸–ú1J$71c381a9-11f2-40bc-86c1-a018ea50feda
