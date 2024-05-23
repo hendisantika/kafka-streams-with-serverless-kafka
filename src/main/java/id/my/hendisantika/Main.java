@@ -1,5 +1,12 @@
 package id.my.hendisantika;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * Created by IntelliJ IDEA.
  * Project : Default (Template) Project
@@ -11,8 +18,13 @@ package id.my.hendisantika;
  * To change this template use File | Settings | File Templates.
  *///TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
+@Slf4j
 public class Main {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     public static void main(String[] args) {
+
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
         System.out.print("Hello and welcome!");
@@ -22,5 +34,15 @@ public class Main {
             // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
             System.out.println("i = " + i);
         }
+    }
+
+    private static Properties loadConfigFromFiles() throws IOException {
+        String configFile = "application.properties";
+        final Properties cfg = new Properties();
+        try (InputStream inputStream = ClassLoader.getSystemClassLoader()
+                .getResourceAsStream(configFile)) {
+            cfg.load(inputStream);
+        }
+        return cfg;
     }
 }
