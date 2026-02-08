@@ -15,7 +15,7 @@ dependencies {
     implementation group: 'org.apache.kafka', name: 'kafka-streams', version: '4.1.1'
     implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '4.1.1'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.21.0'
-    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.27'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.28'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.17'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.17'
     testImplementation platform('org.junit:junit-bom:6.0.2')
